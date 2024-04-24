@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, sort_child_properties_last, dead_code
+// ignore_for_file: prefer_const_constructors, sort_child_properties_last, dead_code, prefer_typing_uninitialized_variables
 
 import 'package:flutter/material.dart';
 
@@ -6,32 +6,14 @@ import 'package:flutter/material.dart';
 class ToDotile extends StatelessWidget {
   final String taskName;
   final bool taskComplited;
-  final bool isfontbold;
-  final String color;
   Function(bool?)? onChanged;
+
   ToDotile({
     super.key,
     required this.taskName,
     required this.taskComplited,
     required this.onChanged,
-    required this.isfontbold,
-    required this.color,
   });
-  colorchange(String a) {
-    switch (a) {
-      case "blue":
-        return Colors.blue;
-        break;
-      case "red":
-        return Colors.red;
-        break;
-      case "white":
-        return Colors.white;
-        break;
-      default:
-        return Colors.black;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,9 +29,13 @@ class ToDotile extends StatelessWidget {
             Text(
               taskName,
               style: TextStyle(
-                  fontWeight: isfontbold ? FontWeight.bold : null,
-                  color: colorchange(color)),
-            )
+                  decoration: taskComplited
+                      ? TextDecoration.lineThrough
+                      : TextDecoration.none),
+            ),
+            SizedBox(
+              width: 10,
+            ),
           ],
         ),
         decoration: BoxDecoration(

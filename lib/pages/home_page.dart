@@ -1,6 +1,7 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names
 
 import 'package:flutter/material.dart';
+import 'package:to_do_app/utilities/diolog_bar.dart';
 import 'package:to_do_app/utilities/todo_tile.dart';
 
 class HomePage extends StatefulWidget {
@@ -10,7 +11,36 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  bool istrue = false;
+  final _controller = TextEditingController();
+  List ToDoList = [
+    ["English prep", false],
+    ["SAT prep", false]
+  ];
+
+  void isChanged(bool? value, int index) {
+    setState(() {
+      ToDoList[index][1] = !ToDoList[index][1];
+    });
+  }
+
+  void saveTask() {
+    setState(() {
+      ToDoList.add([_controller.text, false]);
+    });
+    Navigator.of(context).pop();
+  }
+
+  void createNewTask() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Diolog_bar(
+            controller: _controller,
+            onCancel: () => Navigator.of(context).pop(),
+            onSave: saveTask,
+          );
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,52 +56,18 @@ class _HomePageState extends State<HomePage> {
           backgroundColor: Colors.yellow,
         ),
         backgroundColor: Colors.yellow[200],
-        body: ListView(
-          children: [
-            ToDotile(
-                taskName: 'Celebrate the birthday',
-                taskComplited: true,
-                onChanged: (p0) {},
-                isfontbold: true,
-                color: "red"),
-            ToDotile(
-                taskComplited: false,
-                taskName: "Drink 4L of water",
-                onChanged: (p0) {},
-                isfontbold: true,
-                color: "blue"),
-            ToDotile(
-              taskComplited: true,
-              taskName: "Google Flutter bug",
-              onChanged: (p0) {},
-              isfontbold: true,
-              color: "brown",
-            ),
-            istrue
-                ? ToDotile(
-                    taskName: "Kill Bill",
-                    taskComplited: true,
-                    onChanged: (p0) {},
-                    isfontbold: true,
-                    color: "white")
-                : Padding(
-                    padding: const EdgeInsets.all(50.0),
-                    child: Text(
-                      "Something new?...",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                          fontSize: 18),
-                    ),
-                  )
-          ],
+        body: ListView.builder(
+          itemCount: ToDoList.length,
+          itemBuilder: ((context, index) {
+            return ToDotile(
+              taskName: ToDoList[index][0],
+              taskComplited: ToDoList[index][1],
+              onChanged: (value) => isChanged(value, index),
+            );
+          }),
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            setState(() {
-              istrue = !istrue;
-            });
-          },
+          onPressed: createNewTask,
           child: Icon(Icons.add),
         ));
   }
